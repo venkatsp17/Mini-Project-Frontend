@@ -1,0 +1,118 @@
+
+
+main {
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.login-container {
+    margin-top: 30px;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 300px;
+
+    h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    p {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+    }
+
+    .input-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+
+        .country-code {
+            display: flex;
+            align-items: center;
+            background: #eee;
+            padding: 0.7rem;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+
+            img {
+                width: 20px;
+                height: 14px;
+                margin-right: 0.5rem;
+            }
+
+            span {
+                font-size: 0.9rem;
+            }
+        }
+
+        input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-top-right-radius: 5px;
+            border-bottom-right-radius: 5px;
+        }
+    }
+
+    .request-otp {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        background: #000;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .otp-info {
+        font-size: 0.8rem;
+        color: #999;
+        margin-bottom: 1.5rem;
+    }
+
+    .divider {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 1rem;
+        position: relative;
+
+        &:before, &:after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background: #ccc;
+        }
+
+        &:before {
+            left: 0;
+        }
+
+        &:after {
+            right: 0;
+        }
+    }
+
+    .email-signin {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        background: #fff;
+        color: #000;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+}
