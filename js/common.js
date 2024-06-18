@@ -56,6 +56,20 @@ closeBtn.addEventListener("click", function() {
             cartOverlay.classList.remove('active');
         }, 300); 
     });
+    const headers = document.querySelectorAll('.footer-header');
+
+    headers.forEach(header => {
+      header.addEventListener('click', () => {
+        const parentSection = header.parentElement;
+        parentSection.classList.toggle('active');
+        const content = header.nextElementSibling;
+        if (content.style.display === "block") {
+          content.style.display = "none";
+        } else {
+          content.style.display = "block";
+        }
+      });
+    });
 
 });
 
@@ -67,5 +81,27 @@ function toggleCart() {
         cartOverlay.style.display = 'flex';
     }
 }
+
+let widthMatch = window.matchMedia("(min-width: 768px)");
+widthMatch.addEventListener('change', function(mm) {
+    const headers = document.querySelectorAll('.footer-header');
+    if (mm.matches) {
+        headers.forEach(header => {
+            const parentSection = header.parentElement;
+            parentSection.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.style.display = "block";
+            header.disabled = true;
+        });
+    } else {
+        headers.forEach(header => {
+            const parentSection = header.parentElement;
+            parentSection.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.style.display = "none";
+            header.disabled = false;
+        });
+    }
+});
 
 

@@ -1,10 +1,13 @@
 * {
   font-family: "Berkshire Swash", serif;
   font-style: normal;
+  font-weight: lighter;
 }
 
 .header {
   height: 10%;
+  width: 100%;
+  overflow: hidden;
 }
 .header .top-bar {
   background-color: #333;
@@ -106,54 +109,52 @@
   flex: 1 1 22%;
   margin: 10px 0;
 }
-.footer .footer-content .footer-section h3 {
-  margin-bottom: 20px;
+.footer .footer-content .footer-section .footer-header {
+  background: none;
+  border: none;
+  color: #fff;
   font-size: 18px;
   font-weight: normal;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
 }
-.footer .footer-content .footer-section p, .footer .footer-content .footer-section ul, .footer .footer-content .footer-section li {
+.footer .footer-content .footer-section .footer-header:focus {
+  outline: none;
+}
+.footer .footer-content .footer-section .footer-content-item {
+  display: none;
+}
+.footer .footer-content .footer-section .footer-content-item p, .footer .footer-content .footer-section .footer-content-item ul, .footer .footer-content .footer-section .footer-content-item li {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.footer .footer-content .footer-section ul li {
-  margin-bottom: 10px;
-}
-.footer .footer-content .footer-section ul li i {
-  margin-right: 10px;
-}
-.footer .footer-content .about {
-  max-width: 40%;
-}
-.footer .footer-content .links ul {
+.footer .footer-content .footer-section .footer-content-item ul {
   padding-left: 0;
 }
-.footer .footer-content .links ul li {
+.footer .footer-content .footer-section .footer-content-item ul li {
   margin-bottom: 10px;
 }
-.footer .footer-content .links ul li a {
+.footer .footer-content .footer-section .footer-content-item ul li a {
   color: #fff;
   text-decoration: none;
 }
-.footer .footer-content .links ul li a:hover {
+.footer .footer-content .footer-section .footer-content-item ul li a:hover {
   text-decoration: underline;
 }
-.footer .footer-content .contact ul, .footer .footer-content .social ul {
-  padding-left: 0;
-}
-.footer .footer-content .contact ul li, .footer .footer-content .social ul li {
-  margin-bottom: 10px;
-}
-.footer .footer-content .contact ul li i, .footer .footer-content .social ul li i {
-  margin-right: 10px;
-}
-.footer .footer-content .contact .social-icons a, .footer .footer-content .social .social-icons a {
+.footer .footer-content .footer-section .footer-content-item .social-icons a {
   color: #fff;
   margin-right: 10px;
   font-size: 20px;
 }
-.footer .footer-content .contact .social-icons a:hover, .footer .footer-content .social .social-icons a:hover {
+.footer .footer-content .footer-section .footer-content-item .social-icons a:hover {
   color: #ddd;
+}
+.footer .footer-content .footer-section.about {
+  max-width: 40%;
 }
 .footer .footer-bottom {
   text-align: center;
@@ -162,21 +163,27 @@
   padding-top: 10px;
   font-size: 14px;
 }
-
 @media (max-width: 768px) {
-  .footer-content {
+  .footer .footer-content {
     flex-direction: column;
     align-items: center;
   }
-  .footer-content .footer-section {
+  .footer .footer-content .footer-section {
     flex: 1 1 100%;
     text-align: center;
     max-width: 100%;
   }
-  .footer-content .about {
+  .footer .footer-content .footer-section .footer-header {
+    text-align: center;
+  }
+  .footer .footer-content .footer-section.about {
     max-width: 100%;
   }
+  .footer .footer-content .footer-section.active .footer-content-item {
+    display: block;
+  }
 }
+
 .cart-overlay {
   position: fixed;
   height: 100%;
