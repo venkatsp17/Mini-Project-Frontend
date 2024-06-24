@@ -21,4 +21,9 @@ document.addEventListener("DOMContentLoaded",async function() {
         currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
         updateCarousel();
     });
+
+    setInterval(() => {
+        currentIndex = (currentIndex < totalSlides - 1) ? currentIndex + 1 : 0;
+        updateCarousel();
+    }, 4000);
 });

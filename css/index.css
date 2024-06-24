@@ -1,134 +1,168 @@
 body {
   margin: 0;
   padding: 0;
-  height: 100vh;
   box-sizing: border-box;
+  font-family: "Berkshire Swash", cursive;
+  overflow-x: hidden;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
 }
 
+body.fade-in {
+  opacity: 1;
+}
+
+/* Hero Section with Carousel */
 .hero .carousel {
   position: relative;
   width: 100%;
   margin: auto;
   overflow: hidden;
+  animation: slide-in 1s ease-out 0.5s forwards;
 }
-.hero .carousel .carousel-wrapper {
+
+.carousel-wrapper {
   display: flex;
   transition: transform 0.5s ease;
 }
-.hero .carousel .carousel-wrapper .carousel-slide {
+
+.carousel-slide {
   min-width: 100%;
 }
-.hero .carousel .carousel-wrapper .carousel-slide img {
+
+.carousel-slide img {
   width: 100%;
   display: block;
 }
-.hero .carousel .carousel-control {
+
+.carousel-control {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   background: transparent;
-  color: rgb(231, 230, 230);
+  color: #E7E6E6;
   border: none;
   padding: 10px;
   font-size: 34px;
   cursor: pointer;
+  transition: color 0.3s;
 }
-.hero .carousel .prev {
+
+.carousel-control:hover {
+  color: #555;
+}
+
+.prev {
   left: 10px;
 }
-.hero .carousel .next {
+
+.next {
   right: 10px;
 }
 
+/* Featured Categories Section */
 .featured-categories {
   padding: 20px;
+  text-align: center;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fade-up 1s ease-out 1s forwards;
 }
+
 .featured-categories h2 {
-  text-align: left;
   margin-bottom: 20px;
 }
-.featured-categories .categories-nav {
+
+.featured-categories hr {
+  border: none;
+  height: 1px;
+  background-color: #ddd;
+  margin-bottom: 20px;
+}
+
+.categories-nav {
   display: flex;
   justify-content: center;
+  margin-bottom: 20px;
 }
-.featured-categories .categories-nav button {
+
+.categories-nav .nav-btn {
   padding: 10px 20px;
   margin: 0 10px;
   background-color: #fff;
-  border: 0;
-  color: rgb(166, 168, 168);
+  border: 1px solid #ddd;
+  color: #A6A8A8;
   cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
 }
-.featured-categories .categories-nav .active {
+
+.categories-nav .nav-btn.active,
+.categories-nav .nav-btn:hover {
   color: #333;
-}
-.featured-categories .categories {
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-}
-.featured-categories .categories .category {
-  flex: 1 1 30%;
-  max-width: 30%;
-  text-align: center;
-  margin: 10px;
-}
-.featured-categories .categories .category img {
-  width: 100%;
-  max-width: 100%;
+  background-color: #f0f0f0;
 }
 
 .grid-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 10px;
-  max-width: 1000px; /* Limit the maximum width for the grid container */
+  max-width: 1000px;
+  margin: auto;
   padding: 10px;
-  width: 100%;
-  box-sizing: border-box;
 }
-.grid-container .grid-item {
+
+.grid-item {
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.grid-container .grid-item img {
+
+.grid-item img {
   width: 100%;
   height: auto;
-  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.grid-item img:hover {
+  transform: scale(1.05);
 }
 
 @media screen and (max-width: 890px) {
-  .categories .category {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
   .grid-container {
     gap: 5px;
     padding: 5px;
-    grid-template-columns: repeat(2, 1fr); /* Two columns on screens up to 890px */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 @media screen and (max-width: 600px) {
   .grid-container {
-    grid-template-columns: 1fr; /* Single column on small screens */
-  }
-  .grid-container .grid-item img {
-    width: 70%;
-    height: 70%;
-    justify-items: center;
-    object-fit: cover;
+    grid-template-columns: 1fr;
   }
 }
 @media screen and (min-width: 1400px) {
   .grid-container {
-    max-width: 1400px; /* Adjust the maximum width for larger screens */
-    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); /* Increase min size for larger screens */
+    max-width: 1400px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   }
-  .grid-item img {
-    width: 100%;
-    height: auto;
+}
+/* Keyframes for Animations */
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
 

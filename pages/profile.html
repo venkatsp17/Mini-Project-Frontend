@@ -27,27 +27,27 @@
               <div class="profile-pic">VS</div>
               <div>
                 <div class="profile-name">Venkat Raman S P</div>
-                <div class="profile-time">03:24:05 PM</div>
+                <div class="profile-time" id="clock">03:24:05 PM</div>
               </div>
             </div>
             <nav class="menu">
               <ul>
-                <li><a href="#">My Profile</a></li>
-                <li><a href="#">My Orders</a></li>
-                <li><a href="#">Change Password</a></li>
-                <li><a href="#">Log Out</a></li>
+                <li class="profile-btn"><a href="#">My Profile</a></li>
+                <li class="order-btn"><a href="#">My Orders</a></li>
+                <li class="password-btn"><a href="#">Change Password</a></li>
+                <li class="logout-btn"><a href="#">Log Out</a></li>
               </ul>
             </nav>
             <nav class="menu1">
-              <i class="fa-solid fa-user"></i>
-              <i class="fa-solid fa-bag-shopping"></i>
-              <i class="fa-solid fa-lock"></i>
-              <i class="fa-solid fa-right-from-bracket"></i>
+              <i class="fa-solid fa-user profile-btn"></i>
+              <i class="fa-solid fa-bag-shopping order-btn"></i>
+              <i class="fa-solid fa-lock password-btn"></i>
+              <i class="fa-solid fa-right-from-bracket logout-btn"></i>
             </nav>
           </div>
         </div>
         <div class="main-content">
-          <!-- <section class="section-profile">
+          <section class="section-profile">
                     <div class="main-content-header">
                         <h1>Good Evening! Venkat Raman</h1>
                         <div class="edit-icon">&#9998;</div>
@@ -81,8 +81,8 @@
                                 </div>
                             </div>
                         </div>
-                </section> -->
-          <!-- <section class="section-orders">
+                </section>
+          <section class="section-orders">
             <div class="main-content-header">
               <h1>Your Orders</h1>
             </div>
@@ -193,7 +193,7 @@
                   </div>
               </div>
             </div>
-          </section> -->
+          </section>
           <section class="section-changepassword">
             <div class="input-group">
               <p>Update your password for</p>
@@ -219,7 +219,7 @@
       </div>
     </main>
     <footer class="footer"></footer>
-    <script src="../js/common.js"></script>
-    <script src="../js/profile.js"></script>
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/profile.js"></script>
   </body>
 </html>

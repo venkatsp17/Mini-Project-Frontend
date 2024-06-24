@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Berkshire+Swash&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/index.css">
-
 </head>
 <body>
     <header class="header">
+        <!-- Top bar and navigation code here -->
     </header>
     <main>
         <section class="hero">
@@ -35,12 +35,12 @@
                         <img src="../assets/images/image5.png" alt="Slide 5">
                     </div>
                 </div>
-                <button class="carousel-control prev"> 
-                    <i class='fas fa-arrow-alt-circle-left'></i>
-                 </button>
-                <button class="carousel-control next"> 
-                    <i class='fas fa-arrow-alt-circle-right'></i>
-                  </button>
+                <button class="carousel-control prev">
+                    <i class="fas fa-arrow-alt-circle-left"></i>
+                </button>
+                <button class="carousel-control next">
+                    <i class="fas fa-arrow-alt-circle-right"></i>
+                </button>
             </div>
         </section>
         
@@ -48,10 +48,10 @@
             <h2>Featured Categories</h2>
             <hr>
             <div class="categories-nav">
-                <button class="nav-btn1">Men</button>
-                <button class="nav-btn2">Women</button>
-                <button class="nav-btn3">Footwear</button>
-                <button class="nav-btn4">Accessories</button>
+                <button class="nav-btn active">Men</button>
+                <button class="nav-btn">Women</button>
+                <button class="nav-btn">Kids</button>
+                <button class="nav-btn">Footwaer</button>
             </div>
             <div class="categories">
                 <div class="grid-container">
@@ -64,8 +64,15 @@
         </section>
     </main>
     <footer class="footer">
+        <!-- Footer content here -->
     </footer>
-    <script src="../js/common.js"></script>
-    <script src="../js/script.js"></script>
+    <script type="module" src="../js/common.js"></script>
+    <script type="module" src="../js/script.js"></script>
+    <script>
+        // JavaScript to add 'fade-in' class after page load
+        window.addEventListener('load', () => {
+            document.querySelector('body').classList.add('fade-in');
+        });
+    </script>
 </body>
 </html>

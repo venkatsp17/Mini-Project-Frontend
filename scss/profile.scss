@@ -151,6 +151,7 @@ $background-color: #f8f9fa;
   padding: 20px;
 
   .section-profile {
+    display: none;
     .main-content-header {
       display: flex;
       justify-content: space-between;
@@ -191,6 +192,10 @@ $background-color: #f8f9fa;
       }
     }
   }
+
+  .active{
+    display:block !important;
+  }
 }
 
 .light-text {
@@ -199,7 +204,7 @@ $background-color: #f8f9fa;
 
 .main-content {
   .section-orders {
-    display: flex;
+    display: none;
     flex-direction: column;
     .order-details {
       box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
@@ -338,14 +343,18 @@ $background-color: #f8f9fa;
       }
     }
   }
+
+  .active{
+    display: flex;
+  }
 }
 
 .main-content{
 
   .section-changepassword{
+    display: none;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     padding: 20px;
-    display: flex;
     flex-direction: column;
     align-items: center;
     .input-group {
@@ -382,5 +391,8 @@ $background-color: #f8f9fa;
         font-size: 0.8rem;
     }
     }
+  }
+  .active{
+    display: flex;
   }
 }

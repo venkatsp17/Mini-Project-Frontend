@@ -139,6 +139,9 @@
   flex-grow: 1;
   padding: 20px;
 }
+.main-content .section-profile {
+  display: none;
+}
 .main-content .section-profile .main-content-header {
   display: flex;
   justify-content: space-between;
@@ -171,13 +174,16 @@
 .main-content .section-profile .profile-details .profile-info .info-row span:first-child {
   color: #666;
 }
+.main-content .active {
+  display: block !important;
+}
 
 .light-text {
   color: #666;
 }
 
 .main-content .section-orders {
-  display: flex;
+  display: none;
   flex-direction: column;
 }
 .main-content .section-orders .order-details {
@@ -313,11 +319,14 @@
     font-weight: normal;
   }
 }
+.main-content .active {
+  display: flex;
+}
 
 .main-content .section-changepassword {
+  display: none;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
   padding: 20px;
-  display: flex;
   flex-direction: column;
   align-items: center;
 }
@@ -351,6 +360,9 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 0.8rem;
+}
+.main-content .active {
+  display: flex;
 }
 
 /*# sourceMappingURL=profile.css.map */

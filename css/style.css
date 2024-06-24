@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Berkshire Swash', cursive;
+  font-family: "Berkshire Swash", cursive;
   overflow-x: hidden;
   opacity: 0;
   transition: opacity 1s ease-in-out;
@@ -130,25 +130,22 @@ body.fade-in {
 
 @media screen and (max-width: 890px) {
   .grid-container {
-      gap: 5px;
-      padding: 5px;
-      grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    padding: 5px;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
-
 @media screen and (max-width: 600px) {
   .grid-container {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 }
-
 @media screen and (min-width: 1400px) {
   .grid-container {
-      max-width: 1400px;
-      grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    max-width: 1400px;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
   }
 }
-
 /* Keyframes for Animations */
 @keyframes fade-up {
   0% {
@@ -160,7 +157,6 @@ body.fade-in {
     transform: translateY(0);
   }
 }
-
 @keyframes slide-in {
   0% {
     transform: translateX(-100%);
@@ -169,3 +165,5 @@ body.fade-in {
     transform: translateX(0);
   }
 }
+
+/*# sourceMappingURL=style.css.map */
