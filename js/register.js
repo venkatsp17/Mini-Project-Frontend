@@ -1,6 +1,8 @@
+import { ShowToastNotification } from './common.js';
+
 document
   .getElementById("registration-form")
-  .addEventListener("submit", function (event) {
+  .addEventListener("submit", async function (event) {
     event.preventDefault();
     let valid = true;
 
@@ -10,6 +12,9 @@ document
     const phone_number = document.getElementById("phone_number");
     const username = document.getElementById("username");
     const password = document.getElementById("password");
+    const profile_picture_url = document.getElementById("profile_picture_url");
+    const date_of_Birth = document.getElementById("date_of_birth");
+    const gender = document.getElementById("gender");
 
     // Clear previous error messages
     document
@@ -63,20 +68,80 @@ document
       valid = false;
     }
 
-    if (profile_picture_url.files.length === 0) {
-      document.getElementById("profile_picture_url-error").textContent =
-        "Profile picture is required.";
-      document.getElementById("profile_picture_url-error").style.display =
-        "block";
-      valid = false;
-    }
-
+    // if (profile_picture_url.files.length === 0) {
+    //   document.getElementById("profile_picture_url-error").textContent =
+    //     "Profile picture is required.";
+    //   document.getElementById("profile_picture_url-error").style.display =
+    //     "block";
+    //   valid = false;
+    // }
+    var data = "";
     if (valid) {
-      alert("Registration successful!");
-      // Here you can add your code to submit the form data to the server
       const params = new URLSearchParams(window.location.search);
       const role = params.get("role");
+      var url = "";
+      if(role==0){
+        url = "http://localhost:5083/api/User/CustomerRegister";
+      }
+      if(role==1){
+        url = "http://localhost:5083/api/User/SellerRegister";
+      }
 
+       if (profile_picture_url.files.length != 0) {
+        const formData = new FormData();
+        formData.append('file', profile_picture_url.files[0]);
+
+        try {
+            const response = await fetch('http://localhost:5083/api/ImageAPI/upload', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) {
+              ShowToastNotification(event, "danger", "Something went wrong!");
+            }
+
+            data = await response.json();
+            ShowToastNotification(event, "success", "Image Upload Successfull!");
+        } catch (error) {
+            ShowToastNotification(event, "danger", "Something went wrong!");
+        }
+      }
+
+
+      setTimeout(()=>{
+      }, 3000);
+
+      await fetch(url, {
+        method: "POST",
+        body: JSON.stringify({
+          username: username.value,
+          password: password.value,
+          email: email.value,
+          name: name.value,
+          address: address.value,
+          phone_Number: phone_number.value,
+          date_of_Birth: date_of_Birth.value || "",
+          gender: gender.value || "",
+          profile_Picture_URL: (data.imageId).toString() || ""
+        }),
+        headers: { 
+          "Content-type": "application/json; charset=UTF-8"
+        }
+      }).then(response => response.json())
+        .then(function(result) {
+          console.log(result);
+          if(result.id == undefined){
+            ShowToastNotification(event, "danger", result.message);
+            return;
+          }
+          ShowToastNotification(event, "success", `Registration successfull!`);
+          setTimeout(()=>{
+            window.location.href = './login.html';
+          }, 3000);
+        }).catch(error => {
+          ShowToastNotification(event, "danger", "Something went wrong!");
+        });
     }
   });
 
@@ -104,6 +169,10 @@ document
     }
   });
 
-  const params = new URLSearchParams(window.location.search);
-  const role = params.get("role");
-  console.log(role);
+
+
+
+
+
+
+   

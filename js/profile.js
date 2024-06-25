@@ -1,14 +1,15 @@
+import { getLoginInfo } from './Utils/auth.js';
 // script.js
 function updateClock() {
-    const clockElement = document.getElementById('clock');
-    const now = new Date();
+  const clockElement = document.getElementById("clock");
+  const now = new Date();
 
-    // Format the time as HH:MM:SS
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
+  // Format the time as HH:MM:SS
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  const seconds = String(now.getSeconds()).padStart(2, "0");
 
-    clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+  clockElement.textContent = `${hours}:${minutes}:${seconds}`;
 }
 
 // Update the clock every second
@@ -17,48 +18,82 @@ setInterval(updateClock, 1000);
 // Initial call to display the clock immediately when the page loads
 updateClock();
 
+document.addEventListener("DOMContentLoaded", function () {
+  var profileSection = document.querySelector(".section-profile");
+  var ordersSection = document.querySelector(".section-orders");
+  var passwordSection = document.querySelector(".section-changepassword");
+  var profilebtn = document.querySelectorAll(".profile-btn");
+  var orderbtn = document.querySelectorAll(".order-btn");
+  var passwordbtn = document.querySelectorAll(".password-btn");
+  var logoutbtn = document.querySelectorAll(".logout-btn");
 
-document.addEventListener('DOMContentLoaded', function () {
-    var profileSection = document.querySelector('.section-profile');
-    var ordersSection = document.querySelector('.section-orders');
-    var passwordSection = document.querySelector('.section-changepassword');
-    var profilebtn = document.querySelectorAll('.profile-btn');
-    var orderbtn = document.querySelectorAll('.order-btn');
-    var passwordbtn = document.querySelectorAll('.password-btn');
-    var logoutbtn = document.querySelectorAll('.logout-btn');
-    
-    profileSection.classList.add('active');
-    
-    profilebtn.forEach(element => {
-        element.addEventListener('click', function () {
-            profileSection.classList.add('active');
-            ordersSection.classList.remove('active');
-            passwordSection.classList.remove('active');
-        });
-    });
+  profileSection.classList.add("active");
 
-    orderbtn.forEach(element => {
-        element.addEventListener('click', function () {
-            ordersSection.classList.add('active');
-            profileSection.classList.remove('active');
-            passwordSection.classList.remove('active');
-        });
+  profilebtn.forEach((element) => {
+    element.addEventListener("click", function () {
+      profileSection.classList.add("active");
+      ordersSection.classList.remove("active");
+      passwordSection.classList.remove("active");
     });
-     
-    passwordbtn.forEach(element => {
-        element.addEventListener('click', function () {
-            passwordSection.classList.add('active');
-            profileSection.classList.remove('active');
-            ordersSection.classList.remove('active');
-        });
-    });
+  });
 
-    logoutbtn.forEach(element => {
-        element.addEventListener('click', function () {
-           window.localStorage.clear();
-           window.location.href = './login.html';
-        });
+  orderbtn.forEach((element) => {
+    element.addEventListener("click", function () {
+      ordersSection.classList.add("active");
+      profileSection.classList.remove("active");
+      passwordSection.classList.remove("active");
     });
+  });
+
+  passwordbtn.forEach((element) => {
+    element.addEventListener("click", function () {
+      passwordSection.classList.add("active");
+      profileSection.classList.remove("active");
+      ordersSection.classList.remove("active");
+    });
+  });
+
+  logoutbtn.forEach((element) => {
+    element.addEventListener("click", function () {
+      window.localStorage.clear();
+      window.location.href = "./login.html";
+    });
+  });
+
+  LoadProfileContent();  
 });
 
-
+async function LoadProfileContent() {
+  var userDetails = getLoginInfo();
+  if(userDetails.token == undefined){
+    window.location.href ="./login.html";
+  }
+  const id = userDetails.id;
+  const token = userDetails.token
+  await fetch(`http://localhost:5083/api/User/GetCustomerProfile?UserID=${id}`, {
+    method: "GET",
+    // body: JSON.stringify({}),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+      "Authorization": `Bearer ${token}`
+    },
+  })
+    .then((response) => response.json())
+    .then(function (result) {
+      console.log(result);
+        
+      if(result==null){
+        return;
+      }
+      const valueArray = [result.name, result.address, result.email, result.phone_Number, result.date_of_Birth, result.gender];
+      const elements = document.querySelectorAll('.profile-values');
+      let i=0;
+      elements.forEach((element)=>{
+        element.innerHTML = valueArray[i];
+        i++;
+      })
+    })
+    .catch((error) => {
+     
+    });
+}

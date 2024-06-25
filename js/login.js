@@ -1,4 +1,5 @@
 import { saveLoginInfo } from './Utils/auth.js';
+import { ShowToastNotification } from './common.js';
 
 document.addEventListener("DOMContentLoaded", function () {
   const customerBtn = document.getElementById("customerBtn");
@@ -35,12 +36,12 @@ document.getElementById("customer-form").addEventListener("submit", async functi
   const customerPasswordInput = document.getElementById("customer-password").value;
 
   if (!customerEmailInput || !customerPasswordInput) {
-    alert("Please fill in all required fields.");
+    ShowToastNotification(event, "warning", "Please fill in all required fields.");
     return;
   }
 
   if (!isValidEmail(customerEmailInput)) {
-    alert("Please enter a valid email address.");
+    ShowToastNotification(event, "warning", "Please enter a valid email address.");
     return;
   }
 
@@ -55,8 +56,21 @@ document.getElementById("customer-form").addEventListener("submit", async functi
     }
   }).then(response => response.json())
     .then(function(result) {
+      // console.log(result);
+      // console.log(result.token);
+      if(result.token == undefined){
+        ShowToastNotification(event, "danger", result.message);
+        return;
+      }
       saveLoginInfo(result);
-      window.location.href = './index.html';
+      ShowToastNotification(event, "success", "Login Successfull!");
+      setTimeout(()=>{
+        window.location.href = './index.html';
+      }, 3000);
+     
+    })
+    .catch(error => {
+      ShowToastNotification(event, "danger", error);
     });
 });
 
@@ -66,12 +80,12 @@ document.getElementById("seller-form").addEventListener("submit", async function
   const sellerPasswordInput = document.getElementById("seller-password").value;
 
   if (!sellerEmailInput || !sellerPasswordInput) {
-    alert("Please fill in all required fields.");
+    ShowToastNotification(event, "warning", "Please fill in all required fields.");
     return;
   }
 
   if (!isValidEmail(sellerEmailInput)) {
-    alert("Please enter a valid email address.");
+    ShowToastNotification(event, "warning", "Please enter a valid email address.");
     return;
   }
 
@@ -86,8 +100,17 @@ document.getElementById("seller-form").addEventListener("submit", async function
     }
   }).then(response => response.json())
     .then(function(result) {
+      if(result.token == undefined){
+        ShowToastNotification(event, "danger", result.message);
+        return;
+      }
       saveLoginInfo(result);
-      window.location.href = './index.html';
+      ShowToastNotification(event, "success", "Login Successfull!");
+      setTimeout(()=>{
+        window.location.href = './index.html';
+      }, 3000);
+    }).catch(error => {
+      ShowToastNotification(event, "danger", "Something went wrong!");
     });
 });
 
