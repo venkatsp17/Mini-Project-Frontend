@@ -46,6 +46,7 @@ export function getLoginInfo() {
     const token = data.token;
     // console.log(token);
     try {
+        // console.log(parseJWTPayload(token));
         const { exp } = parseJWTPayload(token);
         const currentTime = Math.floor(Date.now() / 1000);
         if (currentTime > exp) {

@@ -214,7 +214,8 @@
   transition: width 0.3s ease 0s, left 0.3s ease 0s;
   width: 0;
 }
-.main-content .section-orders .order-details .order-details-header .header-item:hover:after {
+.main-content .section-orders .order-details .order-details-header .header-item:hover:after,
+.main-content .section-orders .order-details .order-details-header .header-item.active:after {
   width: 100%;
   left: 0;
 }

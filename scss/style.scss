@@ -84,6 +84,7 @@ body.fade-in {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+ 
 }
 
 .categories-nav .nav-btn {
@@ -94,6 +95,29 @@ body.fade-in {
   color: #A6A8A8;
   cursor: pointer;
   transition: background-color 0.3s, color 0.3s;
+ 
+}
+
+@media screen and (max-width: 600px) {
+  .categories-nav {
+    flex-wrap: wrap; /* Allow items to wrap onto the next line */
+    justify-content: center; /* Center items horizontally */
+    margin: 10px;
+  }
+
+  .categories-nav .nav-btn {
+    font-size: 12px;
+    margin: 5px; /* Increase spacing between buttons */
+  }
+}
+
+@media (max-width: 768px) {
+  .categories-nav .nav-btn {
+    padding: 5px;
+   
+    // margin: 0 5px;
+    // font-size: 12px; /* Adjust font size for smaller screens */
+  }
 }
 
 .categories-nav .nav-btn.active,
