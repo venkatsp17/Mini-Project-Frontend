@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="../css/common.css">
     <link rel="stylesheet" href="../css/productview.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <header class="header">
@@ -17,7 +18,7 @@
     <main class="product-page">
         <div class="product-detail">
             <div class="product-images">
-                <img src="../assets/image.png" alt="Main Product Image">
+                <img id="product-img" src="" alt="Main Product Image">
                 <!-- <div class="thumbnail-images">
                     <img src="thumb1.png" alt="Thumbnail Image 1">
                     <img src="thumb2.png" alt="Thumbnail Image 2">
@@ -25,16 +26,12 @@
                 </div> -->
             </div>
             <div class="product-info">
-                <h1>Zigwi Black Crochet Shirt</h1>
-                <p class="price">
-                    INR 1,199
+                <h1 id="product-title"></h1>
+                <h3 id="product-brand"></h3>
+                <p id="product-price" class="price">
+                    
                 </p>
-                <ul class="offers">
-                    <li>Get this for INR 1,079 - Buy 2 & Get Flat 10% Off! Code: BUY2</li>
-                    <li>Get this for INR 959 - Buy 5 & Get Flat 20% Off! Code: BUY5</li>
-                    <li>Get this for INR 1,019 - Flat 15% Off on minimum purchase of 2699/- Code: FLAT15</li>
-                    <li>Get this for INR 959 - Flat 20% Off on minimum purchase of 3999/- Code: FLAT20</li>
-                </ul>
+                <p class="product-description"></p>
                 <div class="size-selection">
                     <label>Select a size</label>
                     <div class="sizes">
