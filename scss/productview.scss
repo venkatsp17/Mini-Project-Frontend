@@ -68,6 +68,11 @@ $white-color: #fff;
                           background-color: $primary-color;
                           color: $white-color;
                       }
+                     
+                  }
+                  .active{
+                    background-color: $primary-color;
+                    color: $white-color;
                   }
               }
           }

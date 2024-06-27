@@ -1,4 +1,4 @@
-import { saveLoginInfo } from './Utils/auth.js';
+import { saveCustomerInfo, saveLoginInfo } from './Utils/auth.js';
 import { ShowToastNotification } from './common.js';
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -55,24 +55,52 @@ document.getElementById("customer-form").addEventListener("submit", async functi
       "Content-type": "application/json; charset=UTF-8"
     }
   }).then(response => response.json())
-    .then(function(result) {
-      // console.log(result);
-      // console.log(result.token);
+    .then(async function(result) {
       if(result.token == undefined){
         ShowToastNotification(event, "danger", result.message);
         return;
       }
       saveLoginInfo(result);
+      const id = result.id;
+      const token = result.token;
+
+      const customerID = await FetchCustomerID(id, token);
+      saveCustomerInfo({ CustomerID: customerID });
+
+
       ShowToastNotification(event, "success", "Login Successfull!");
       setTimeout(()=>{
-        window.location.href = './index.html';
+        const returnUrl = localStorage.getItem('returnUrl');
+        if (returnUrl) {
+          localStorage.removeItem('returnUrl'); 
+          window.location.replace(returnUrl);
+        } else {
+          window.location.replace('./index.html');
+        }
+     
       }, 3000);
      
     })
     .catch(error => {
+      console.log(error);
       ShowToastNotification(event, "danger", error);
     });
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 document.getElementById("seller-form").addEventListener("submit", async function (event) {
   event.preventDefault();
@@ -123,3 +151,26 @@ document.getElementById("seller-email-signin").addEventListener("click", functio
     const queryString = new URLSearchParams({role:1}).toString();
     window.location.href = `./register.html?${queryString}`;
 });
+
+
+
+
+
+async function FetchCustomerID(id, token) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: `http://localhost:5083/api/User/GetCustomerProfile?UserID=${id}`,
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      success: function(response) {
+        resolve(response.customerID);
+      },
+      error: function(xhr, status, error) {
+        console.error('Error fetching image:', error);
+        resolve(0); // or reject(error) if you want to handle the error differently
+      }
+    });
+  });
+}

@@ -1,4 +1,4 @@
-import { getLoginInfo } from "./Utils/auth.js";
+import { getCustomerInfo, getLoginInfo } from "./Utils/auth.js";
 
 async function LoadContent() {
   try {
@@ -24,6 +24,17 @@ async function LoadContent() {
   }
 }
 
+function addCloseCartListener() {
+  const closeCartBtn = document.querySelector(".close-cart");
+  const cartElement = cartOverlay.querySelector(".cart");
+  closeCartBtn.addEventListener("click", function () {
+    cartElement.classList.remove("active");
+    setTimeout(() => {
+      cartOverlay.classList.remove("active");
+    }, 300);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
   await LoadContent();
 
@@ -47,51 +58,19 @@ document.addEventListener("DOMContentLoaded", async function () {
   const logo = document.querySelector(".logo");
 
   //Check cart Login
-  var userDetails = getLoginInfo();
-  if (userDetails == null) {
-    cartElement.innerHTML = `
-                            <div class="cart-header">
-                            <h2>Bag</h2>
-                            <button class="close-cart">X</button>
-                            </div>
-                            <div class="cart-body">
-                                <h3><a href='./login.html'>Login / SignUp </a></h3>
-                             </div>`;
-  } else {
-    cartElement.innerHTML = `<div class="cart-header">
-            <h2>Bag</h2>
-            <button class="close-cart">X</button>
-        </div>
-        <div class="cart-item">
-            <img src="../assets/image.png" alt="Product Image">
-            <div class="item-details">
-                <p>Plaided Light Blue Check Shirt</p>
-                <p>Color: Blue</p>
-                <p>Size: L</p>
-                <div class="quantity">
-                    <button class="quantity-btn">-</button>
-                    <span>1</span>
-                    <button class="quantity-btn">+</button>
-                </div>
-                <p>INR 1,199</p>
-            </div>
-        </div>
-        <div class="cart-summary">
-            <p>Subtotal: INR 1,199</p>
-            <p>Shipping, taxes, and discount codes calculated at checkout.</p>
-            <button class="checkout-button">Proceed to Checkout</button>
-        </div>`;
-  }
+ 
 
   logo.addEventListener("click", function () {
     window.location = "./index.html";
   });
 
-  cartToggleBtn.addEventListener("click", function () {
+  cartToggleBtn.addEventListener("click",async function (event) {
     cartOverlay.classList.add("active");
-    setTimeout(() => {
-      cartElement.classList.add("active");
-    }, 0);
+    cartElement.classList.add("active");
+    // setTimeout(() => {
+    //   cartElement.classList.add("active");
+    // }, 0);
+    await GetCartItems(event);
   });
 
   profileBtn.addEventListener("click", function () {
@@ -103,14 +82,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       window.location.href = "./profile.html";
     }
   });
-  const closeCartBtn = cartOverlay.querySelector(".close-cart");
 
-  closeCartBtn.addEventListener("click", function () {
-    cartElement.classList.remove("active");
-    setTimeout(() => {
-      cartOverlay.classList.remove("active");
-    }, 300);
-  });
 
   const headers = document.querySelectorAll(".footer-header");
 
@@ -203,4 +175,138 @@ const showToast = (
 export function ShowToastNotification(event, type, message) {
     event.preventDefault(); 
     showToast(message,type,3000); 
+}
+
+
+var cartData;
+
+async function GetCartItems(event) {
+  const userDetails = getLoginInfo();
+  const customerID = getCustomerInfo().CustomerID;
+  const cartOverlay = document.getElementById("cartOverlay");
+  const cartElement = cartOverlay.querySelector(".cart");
+
+  if (userDetails == null || customerID == undefined) {
+    cartElement.innerHTML = `
+      <div class="cart-header">
+        <h2>Bag</h2>
+        <button class="close-cart">X</button>
+      </div>
+      <div class="cart-body">
+        <h3><a href='./login.html'>Login / SignUp </a></h3>
+      </div>`;
+      addCloseCartListener();
+    return;
+  }
+
+  const token = userDetails.token;
+
+  $.ajax({
+    url: `http://localhost:5083/api/CustomerCart/GetCart?customerID=${customerID}`,
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`
+    },
+    success:async function(response) {
+      cartData = response;
+      console.log(response);
+      const cartItemsHtml = await Promise.all(cartData.cartItems.map(async item => {
+        const imageUrl = await fetchImage(item.product.image_URL);
+        return `
+          <div class="cart-item">
+            <img src="${imageUrl}" alt="Product Image">
+            <div class="item-details">
+              <p>${item.product.name}</p>
+              <p>Size: ${item.size}</p>
+              <div class="quantity">
+                <button class="quantity-btn" data-action="decrease" data-id="${item.cartItemID}">-</button>
+                <span>${item.quantity}</span>
+                <button class="quantity-btn" data-action="increase" data-id="${item.cartItemID}">+</button>
+              </div>
+              <p class="price">INR ${item.price}</p>
+            </div>
+          </div>`;
+      }));
+      
+      const subtotal = cartData.cartItems.reduce((sum, item) => sum + item.price, 0);
+
+      cartElement.innerHTML = `
+        <div class="cart-header">
+          <h2>Bag</h2>
+          <button class="close-cart">X</button>
+        </div>
+          ${cartItemsHtml}
+        <div class="cart-summary">
+          <h3 class="price">Subtotal: INR ${subtotal}</h3>
+          <p>Shipping, taxes, and discount codes calculated at checkout.</p>
+          <button class="checkout-button">Proceed to Checkout</button>
+        </div>`;
+        addCloseCartListener();
+      // Add event listeners for quantity buttons
+      $('.quantity-btn').click(function(event) {
+        const action = $(this).data('action');
+        const id = $(this).data('id');
+        updateQuantity(id, action, event);
+      });
+
+    },
+    error: function(xhr, status, error) {
+      ShowToastNotification(event, 'danger', "Something went wrong!");
+    }
+  });
+
+}
+
+function updateQuantity(id, action, event) {
+  var userDetails = getLoginInfo();
+  const item = cartData.cartItems.find(item => item.cartItemID === id);
+  if (!item) {
+    console.error('Item not found in cart');
+    return;
+  }
+
+  let newQuantity = item.quantity;
+  if (action === 'increase') {
+    newQuantity += 1;
+  } else if (action === 'decrease' && newQuantity > 0) {
+    newQuantity -= 1;
+  }
+
+  if (newQuantity < 0) {
+    newQuantity = 0;
+  }
+
+  $.ajax({
+    url: `http://localhost:5083/api/CustomerCart/UpdateCartItemQuantity?CartItemID=${id}&Quantity=${newQuantity}`,
+    method: 'PUT', 
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+       Authorization: `Bearer ${userDetails.token}`,
+    },
+    success: function(response) {
+      // Update the cart HTML
+      GetCartItems();
+    },
+    error: function(xhr, status, error) {
+      console.error('Failed to update item quantity:', error);
+      ShowToastNotification(event, 'danger', "Failed to update item quantity!");
+    }
+  });
+}
+
+
+
+async function fetchImage(imageId) {
+  const response = await fetch(
+    `http://localhost:5083/api/ImageAPI/${imageId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        // Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
 }

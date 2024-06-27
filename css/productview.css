@@ -66,6 +66,10 @@
   background-color: #333;
   color: #fff;
 }
+.product-page .product-detail .product-info .size-selection .sizes .active {
+  background-color: #333;
+  color: #fff;
+}
 .product-page .product-detail .product-info .add-to-cart {
   width: 80%;
   background-color: #e74c3c;

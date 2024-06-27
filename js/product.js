@@ -23,14 +23,14 @@ async function fetchProducts(page) {
     }
 }
 
-async function fetchImage(imageId, token) {
+async function fetchImage(imageId) {
     const response = await fetch(
         `http://localhost:5083/api/ImageAPI/${imageId}`,
         {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                Authorization: `Bearer ${token}`,
+                // Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -40,13 +40,13 @@ async function fetchImage(imageId, token) {
 
 async function renderProducts(products) {
     const productsContainer = document.querySelector('.products');
-    const userDetails = getLoginInfo();
-    if (userDetails == null) {
-        window.location.href = './login.html';
-        return;
-    }
+    // const userDetails = getLoginInfo();
+    // if (userDetails == null) {
+    //     window.location.href = './login.html';
+    //     return;
+    // }
     for (const product of products) {
-        const imageUrl = await fetchImage(product.image_URL, userDetails.token);
+        const imageUrl = await fetchImage(product.image_URL);
         const productElement = document.createElement('div');
         productElement.classList.add('product');
         productElement.innerHTML = `

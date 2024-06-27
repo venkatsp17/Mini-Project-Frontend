@@ -14,6 +14,11 @@ export function saveLoginInfo(loginInfo) {
     localStorage.setItem('loginInfo', encodedInfo);
 }
 
+export function saveCustomerInfo(customerInfo) {
+    const encodedInfo = encodeToBase64(customerInfo);
+    localStorage.setItem('customerInfo', encodedInfo);
+}
+
 export function parseJWTPayload(token) {
     if (!token) {
         throw new Error('Token is required');
@@ -58,6 +63,20 @@ export function getLoginInfo() {
         return null;
     }
 
+    return data;
+}
+
+
+
+export function getCustomerInfo() {
+    const encodedInfo = localStorage.getItem('customerInfo');
+    if (!encodedInfo) {
+        return null;
+    }
+    // console.log(encodedInfo);
+    const data = decodeFromBase64(encodedInfo);
+
+    // console.log(data);
     return data;
 }
 

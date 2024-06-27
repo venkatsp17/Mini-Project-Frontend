@@ -341,11 +341,16 @@
     }
   }
 }
+.price{
+  color: #e74c3c;
+}
 
 .cart-summary {
   margin-top: auto;
   p {
+    font-size: medium;
     margin: 10px 0;
+    color: grey;
   }
   .checkout-button {
     background: #000;
