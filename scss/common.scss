@@ -324,6 +324,7 @@
   min-width: 200px;
   display: flex;
   align-items: center;
+  flex-direction: column;
   justify-content: center;
   h3 {
     border: 0.5px solid grey;

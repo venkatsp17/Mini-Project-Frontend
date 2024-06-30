@@ -1,4 +1,4 @@
-import { getLoginInfo } from "./Utils/auth.js";
+import { getCustomerInfo, getLoginInfo } from "./Utils/auth.js";
 
 // Function to update the clock
 function updateClock() {
@@ -100,7 +100,8 @@ var CustomerID;
 
 async function LoadProfileContent() {
   var userDetails = getLoginInfo();
-  if (userDetails.token == undefined) {
+  var customerInfo = getCustomerInfo();
+  if (userDetails.token == undefined || customerInfo == null) {
     window.location.href = "./login.html";
   }
   const id = userDetails.id;
@@ -148,7 +149,8 @@ var orderURL = `http://localhost:5083/api/CustomerOrder/ViewCurrentOrders?Custom
 async function LoadOrderContent(status) {
 
   var userDetails = getLoginInfo();
-  if (userDetails == null) {
+  var customerInfo = getCustomerInfo();
+  if (userDetails == null || customerInfo == null) {
     window.location.href = "./login.html";
   }
   const token = userDetails.token;

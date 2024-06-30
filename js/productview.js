@@ -27,19 +27,19 @@ $(document).ready(async function () {
  
 // Add to Cart Click funtionality
   $(".add-to-cart").click(async function(event){
-    CustomerID = getCustomerInfo().CustomerID;
-    console.log(CustomerID);
+    const CustomerInfo = getCustomerInfo();
     const userDetails = getLoginInfo();
-    if(size==0){
-      ShowToastNotification(event, "warning", "Select a size");
-      return;
-    }
-    if(CustomerID == null || userDetails == null){
+    if(CustomerInfo == null || userDetails == null){
       window.localStorage.setItem('returnUrl', window.location.href);
       window.location.replace('./login.html');
       return;
    }
+   if(size==0){
+    ShowToastNotification(event, "warning", "Select a size");
+    return;
+  }
     const token = userDetails.token;
+    CustomerID = CustomerInfo.CustomerID;
     await addToCart(productData, token, event);
     $(".cart-btn").click();
   });

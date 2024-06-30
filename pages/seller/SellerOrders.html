@@ -16,6 +16,7 @@
     />
     <link rel="stylesheet" href="../../css/seller/SellerCommon.css" />
     <link rel="stylesheet" href="../../css/seller/SellerOrders.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
   <body>
     <header class="header"></header>
@@ -94,6 +95,9 @@
                 Add customer
               </button> -->
         </div>
+        <div id="emptyMessage" class="empty-message" style="display: none">
+          Order list is empty.
+        </div>
         <!-- Table -->
         <table class="table">
           <thead>
@@ -101,167 +105,40 @@
               <th># Order ID</th>
               <th>Order Date</th>
               <th>Status</th>
-              <th>Address</th>
               <th>Total_Amount</th>
               <th>Shipping_Method</th>
               <th></th>
               <th></th>
             </tr>
           </thead>
-          <tbody>
-            <tr>
-              <td><b>1</b></td>
-              <td>
-                01/09/2023
-              </td>
-              <td>
-                <span class="status active">Active</span>
-              </td>
-              <td>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                Nulla...
-              </td>
-              <td>$70.00</td>
-              <td>
-                <span>Cash On Delivery </span>
-              </td>
-              <td>
-                <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-              </td>
-              <td>
-                <button class="checkout-button table-button">Checkout</button>
-              </td>
-            </tr>
-            <tr>
-                <td><b>1</b></td>
-                <td>
-                  01/09/2023
-                </td>
-                <td>
-                  <span class="status active">Active</span>
-                </td>
-                <td>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nulla...
-                </td>
-                <td>$70.00</td>
-                <td>
-                  <span>Cash On Delivery </span>
-                </td>
-                <td>
-                  <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-                </td>
-                <td>
-                  <button class="checkout-button table-button">Checkout</button>
-                </td>
-              </tr>
-              <tr>
-                <td><b>1</b></td>
-                <td>
-                  01/09/2023
-                </td>
-                <td>
-                  <span class="status active">Active</span>
-                </td>
-                <td>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nulla...
-                </td>
-                <td>$70.00</td>
-                <td>
-                  <span>Cash On Delivery </span>
-                </td>
-                <td>
-                  <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-                </td>
-                <td>
-                  <button class="checkout-button table-button">Checkout</button>
-                </td>
-              </tr>
-              <tr>
-                <td><b>1</b></td>
-                <td>
-                  01/09/2023
-                </td>
-                <td>
-                  <span class="status active">Active</span>
-                </td>
-                <td>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nulla...
-                </td>
-                <td>$70.00</td>
-                <td>
-                  <span>Cash On Delivery </span>
-                </td>
-                <td>
-                  <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-                </td>
-                <td>
-                  <button class="checkout-button table-button">Checkout</button>
-                </td>
-              </tr>
-              <tr>
-                <td><b>1</b></td>
-                <td>
-                  01/09/2023
-                </td>
-                <td>
-                  <span class="status active">Active</span>
-                </td>
-                <td>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nulla...
-                </td>
-                <td>$70.00</td>
-                <td>
-                  <span>Cash On Delivery </span>
-                </td>
-                <td>
-                  <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-                </td>
-                <td>
-                  <button class="checkout-button table-button">Checkout</button>
-                </td>
-              </tr>
-              <tr>
-                <td><b>1</b></td>
-                <td>
-                  01/09/2023
-                </td>
-                <td>
-                  <span class="status active">Active</span>
-                </td>
-                <td>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nulla...
-                </td>
-                <td>$70.00</td>
-                <td>
-                  <span>Cash On Delivery </span>
-                </td>
-                <td>
-                  <i class="fa-solid fa-eye table-button" id="openModalBtn"></i>
-                </td>
-                <td>
-                  <button class="checkout-button table-button">Checkout</button>
-                </td>
-              </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
         <div class="glass-effect pagination-container">
-          <div class="text-gray">1-10 of 97</div>
+          <div class="text-gray">
+            <span id="currentRange">0</span> of <span id="totalCount">0</span>
+          </div>
           <div class="pagination-options">
             <span class="text-gray margin-right">Rows per page:</span>
-            <select class="text-grey focus-ring">
-              <option>10</option>
-              <option>20</option>
-              <option>30</option>
+            <select id="rowsPerPage" class="text-grey focus-ring">
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
             </select>
             <div class="pagination">
-              <button class="pagination-button focus-ring">&lt;</button>
-              <span class="page-number">1/10</span>
-              <button class="pagination-button focus-ring">&gt;</button>
+              <button
+                id="prevPage"
+                class="pagination-button focus-ring"
+                disabled
+              >
+                &lt;
+              </button>
+              <span id="pageNumber" class="page-number">1</span>/<span
+                id="totalPages"
+                >10</span
+              >
+              <button id="nextPage" class="pagination-button focus-ring">
+                &gt;
+              </button>
             </div>
           </div>
         </div>
@@ -272,54 +149,13 @@
         <div class="modal-content">
           <span class="close-btn">&times;</span>
           <h2>Order Details</h2>
-          <div class="order-details">
-            <table>
-              <tr>
-                <th>Order Number</th>
-                <td>#12345</td>
-              </tr>
-              <tr>
-                <th>Date</th>
-                <td>June 24, 2024</td>
-              </tr>
-              <tr>
-                <th>Items</th>
-                <td>
-                  <table class="items-table">
-                    <thead>
-                      <tr>
-                        <th>Item</th>
-                        <th>Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>Item 1</td>
-                        <td>$10.00</td>
-                      </tr>
-                      <tr>
-                        <td>Item 2</td>
-                        <td>$20.00</td>
-                      </tr>
-                      <tr>
-                        <td>Item 3</td>
-                        <td>$30.00</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <th>Total</th>
-                <td>$60.00</td>
-              </tr>
-            </table>
-          </div>
+          <div class="order-details"></div>
         </div>
       </div>
     </main>
     <footer></footer>
-    <script src="../../js/seller/SellerCommon.js"></script>
-    <script src="../../js/seller/SellerOrders.js"></script>
+
+    <script type="module" src="../../js/seller/SellerCommon.js"></script>
+    <script type="module" src="../../js/seller/SellerProducts.js"></script>
   </body>
 </html>

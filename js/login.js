@@ -1,4 +1,4 @@
-import { saveCustomerInfo, saveLoginInfo } from './Utils/auth.js';
+import { saveCustomerInfo, saveLoginInfo, saveSellerInfo } from './Utils/auth.js';
 import { ShowToastNotification } from './common.js';
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -127,15 +127,23 @@ document.getElementById("seller-form").addEventListener("submit", async function
       "Content-type": "application/json; charset=UTF-8"
     }
   }).then(response => response.json())
-    .then(function(result) {
+    .then(async function(result) {
       if(result.token == undefined){
         ShowToastNotification(event, "danger", result.message);
         return;
       }
       saveLoginInfo(result);
+
+      const id = result.id;
+      const token = result.token;
+
+      const sellerInfo = await FetchSellerID(id, token);
+      console.log(sellerInfo);
+      saveSellerInfo(sellerInfo);
+
       ShowToastNotification(event, "success", "Login Successfull!");
       setTimeout(()=>{
-        window.location.href = './index.html';
+        window.location.href = './seller/SellerHome.html';
       }, 3000);
     }).catch(error => {
       ShowToastNotification(event, "danger", "Something went wrong!");
@@ -174,3 +182,24 @@ async function FetchCustomerID(id, token) {
     });
   });
 }
+
+
+async function FetchSellerID(id, token) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      url: `http://localhost:5083/api/User/GetSellerProfile?UserID=${id}`,
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      success: function(response) {
+        resolve(response);
+      },
+      error: function(xhr, status, error) {
+        console.error('Error fetching image:', error);
+        resolve(0); // or reject(error) if you want to handle the error differently
+      }
+    });
+  });
+}
+
