@@ -31,8 +31,9 @@ window.DispatchOrder = function(event, id) {
     var userDetails = getLoginInfo();
     var sellerInfo = getSellerInfo();
     if (userDetails == null || sellerInfo == null) {
-        window.location.href = "../login.html";
-        return;
+      window.localStorage.setItem('returnUrl', window.location.href);
+      window.location.replace('./login.html');
+      return;
     }
     const token = userDetails.token;
     $.ajax({

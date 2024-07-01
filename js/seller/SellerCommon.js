@@ -1,3 +1,13 @@
+// window.onbeforeunload = function() {
+//   // Clear local storage
+//   localStorage.clear();
+// };
+
+$(".logoutbtn").on("click", function () {
+  window.localStorage.clear();
+  window.location.replace('../login.html');
+});
+
 async function LoadContent() {
   try {
     const headerResponse = await fetch("../seller/SellerHeader.html");
@@ -13,18 +23,11 @@ async function LoadContent() {
 
 document.addEventListener("DOMContentLoaded", async function () {
   await LoadContent();
-
-
 });
 window.addEventListener("load", () => {
-    document.querySelector("body").classList.add("fade-in");
-  });
+  document.querySelector("body").classList.add("fade-in");
+});
 
-
-
-
-
-  
 //Toast
 
 let icon = {

@@ -143,8 +143,14 @@ document.getElementById("seller-form").addEventListener("submit", async function
 
       ShowToastNotification(event, "success", "Login Successfull!");
       setTimeout(()=>{
-        window.location.href = './seller/SellerHome.html';
-      }, 3000);
+        const returnUrl = localStorage.getItem('returnUrl');
+        if (returnUrl) {
+          localStorage.removeItem('returnUrl'); 
+          window.location.replace(returnUrl);
+        } else {
+          window.location.replace('./seller/SellerHome.html');
+        }
+      });
     }).catch(error => {
       ShowToastNotification(event, "danger", "Something went wrong!");
     });

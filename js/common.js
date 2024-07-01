@@ -1,5 +1,11 @@
 import { getCustomerInfo, getLoginInfo } from "./Utils/auth.js";
 
+// window.onbeforeunload = function() {
+//   // Clear local storage
+//   localStorage.clear();
+// };
+
+
 async function LoadContent() {
   try {
     const headerResponse = await fetch("../pages/header.html");
