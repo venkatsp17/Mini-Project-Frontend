@@ -5,7 +5,6 @@ import { getCustomerInfo, getLoginInfo } from "./Utils/auth.js";
 //   localStorage.clear();
 // };
 
-
 async function LoadContent() {
   try {
     const headerResponse = await fetch("../pages/header.html");
@@ -43,8 +42,41 @@ function addCloseCartListener() {
   });
 }
 
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", async function (event) {
   await LoadContent();
+  $('#searchInput').hide();
+  $('.cancel-btn').hide();
+  $('#HeaderSearch1').hide();
+
+  $('#HeaderSearch').click(function(event) {
+    event.preventDefault();
+    $('.nav-bar').addClass('search-bar');
+    $('.menu, .nav-icons').hide();
+    $('.logo').hide();
+    $('#searchInput').show();
+    $('#HeaderSearch1').show();
+    $('.cancel-btn').show();
+    $('#searchInput').focus(); // Automatically focus on the search input
+  });
+
+  $('.cancel-btn').click(function() {
+    $('.cancel-btn').hide();
+    $('.nav-bar').removeClass('search-bar');
+    $('.menu, .nav-icons').show();
+    $('.logo').show();
+    $('#HeaderSearch1').hide();
+    $('#searchInput').hide();
+
+    $('#searchInput').val(''); // Clear the search input field if needed
+  });
+
+  $('#HeaderSearch1').click(function(event) {
+    event.preventDefault();
+    const value = $('#searchInput').val();
+    console.log(value);
+    localStorage.setItem('query', value);
+    window.location.href = './product.html';
+  });
 
   const sideMenu = document.querySelector(".side-menu");
   const menuToggle = document.querySelector(".menu-toggle");
@@ -260,7 +292,7 @@ async function GetCartItems(event) {
       initModal(); // Initialize the modal functionality after loading it
     },
     error: function (xhr, status, error) {
-      if(xhr.responseJSON.message === 'Cart with given ID Not Found!'){
+      if (xhr.responseJSON.message === "Cart with given ID Not Found!") {
         cartElement.innerHTML = `
         <div class="cart-header">
           <h2>Bag</h2>
@@ -270,8 +302,8 @@ async function GetCartItems(event) {
            <h4>No items in cart!</h4>
            <h3><a href='./product.html'>Add Items</a></h3>
         </div>`;
-      addCloseCartListener();
-      return;
+        addCloseCartListener();
+        return;
       }
       ShowToastNotification(event, "danger", "Something went wrong!");
     },
@@ -433,49 +465,49 @@ function initModal() {
     try {
       const result = await PlaceOrder(event);
       if (result && result.orderID) {
-          await MakePayment(event, result.orderID, 'UPI');
+        await MakePayment(event, result.orderID, "UPI");
       } else {
-          console.error("Invalid orderID returned from PlaceOrder:", result);
+        console.error("Invalid orderID returned from PlaceOrder:", result);
       }
-      
+
       modalContent.classList.remove("show");
       setTimeout(() => {
-          modal.classList.remove("show");
-      }, 300); 
-  } catch (error) {
+        modal.classList.remove("show");
+      }, 300);
+    } catch (error) {
       console.error("Error placing order or making payment:", error);
-  }
+    }
   });
 
-  PaymentButton2.addEventListener("click",async function (event) {
+  PaymentButton2.addEventListener("click", async function (event) {
     try {
       const result = await PlaceOrder(event);
       if (result && result.orderID) {
-          await MakePayment(event, result.orderID, 'Card');
+        await MakePayment(event, result.orderID, "Card");
       } else {
-          console.error("Invalid orderID returned from PlaceOrder:", result);
+        console.error("Invalid orderID returned from PlaceOrder:", result);
       }
-      
+
       modalContent.classList.remove("show");
       setTimeout(() => {
-          modal.classList.remove("show");
-      }, 300); 
-  } catch (error) {
+        modal.classList.remove("show");
+      }, 300);
+    } catch (error) {
       console.error("Error placing order or making payment:", error);
-  }
+    }
   });
 
-  OrderButton.addEventListener("click",async function (event) {
+  OrderButton.addEventListener("click", async function (event) {
     try {
       const result = await PlaceOrder(event);
       modalContent.classList.remove("show");
       setTimeout(() => {
-          modal.classList.remove("show");
-      }, 300); 
-  } catch (error) {
+        modal.classList.remove("show");
+      }, 300);
+    } catch (error) {
       console.error("Error placing order or making payment:", error);
-  }
-});
+    }
+  });
 }
 
 async function GetCartItemsForCheckout(event) {
@@ -554,8 +586,8 @@ async function PlaceOrder(event) {
   const customerInfo = getCustomerInfo();
 
   if (userDetails == null || customerInfo == null) {
-      ShowToastNotification(event, "danger", "User or customer info missing!");
-      throw new Error("User or customer info missing");
+    ShowToastNotification(event, "danger", "User or customer info missing!");
+    throw new Error("User or customer info missing");
   }
 
   const customerID = customerInfo.CustomerID;
@@ -565,29 +597,29 @@ async function PlaceOrder(event) {
   let shippingCost = shippingMethod.value === "express" ? 100 : 0;
 
   return new Promise((resolve, reject) => {
-      $.ajax({
-          url: `http://localhost:5083/api/CustomerOrder/PlaceOrder`,
-          method: "POST",
-          headers: {
-              "Content-type": "application/json; charset=UTF-8",
-              Authorization: `Bearer ${token}`,
-          },
-          data: JSON.stringify({
-              customerID: customerID,
-              address: address.value,
-              shipping_Method: shippingMethod.value,
-              shipping_Cost: shippingCost,
-          }),
-          success: function (response) {
-              console.log(response);
-              ShowToastNotification(event, "success", "Order Placed!");
-              resolve(response);  
-          },
-          error: function (xhr, status, error) {
-              ShowToastNotification(event, "danger", "Something went wrong!");
-              reject(error);  
-          },
-      });
+    $.ajax({
+      url: `http://localhost:5083/api/CustomerOrder/PlaceOrder`,
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify({
+        customerID: customerID,
+        address: address.value,
+        shipping_Method: shippingMethod.value,
+        shipping_Cost: shippingCost,
+      }),
+      success: function (response) {
+        console.log(response);
+        ShowToastNotification(event, "success", "Order Placed!");
+        resolve(response);
+      },
+      error: function (xhr, status, error) {
+        ShowToastNotification(event, "danger", "Something went wrong!");
+        reject(error);
+      },
+    });
   });
 }
 
@@ -596,34 +628,34 @@ async function MakePayment(event, OrderID, paymentMethod) {
   const customerInfo = getCustomerInfo();
 
   if (userDetails == null || customerInfo == null) {
-      ShowToastNotification(event, "danger", "User or customer info missing!");
-      throw new Error("User or customer info missing");
+    ShowToastNotification(event, "danger", "User or customer info missing!");
+    throw new Error("User or customer info missing");
   }
 
   const customerID = customerInfo.CustomerID;
   const token = userDetails.token;
 
   return new Promise((resolve, reject) => {
-      $.ajax({
-          url: `http://localhost:5083/api/CustomerPayment/MakePayment`,
-          method: "POST",
-          headers: {
-              "Content-type": "application/json; charset=UTF-8",
-              Authorization: `Bearer ${token}`,
-          },
-          data: JSON.stringify({
-              orderID: OrderID,
-              payment_Method: paymentMethod
-          }),
-          success: function (response) {
-              console.log(response);
-              ShowToastNotification(event, "success", "Payment Successful!");
-              resolve(response);  
-          },
-          error: function (xhr, status, error) {
-              ShowToastNotification(event, "danger", "Something went wrong!");
-              reject(error);  
-          },
-      });
+    $.ajax({
+      url: `http://localhost:5083/api/CustomerPayment/MakePayment`,
+      method: "POST",
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+        Authorization: `Bearer ${token}`,
+      },
+      data: JSON.stringify({
+        orderID: OrderID,
+        payment_Method: paymentMethod,
+      }),
+      success: function (response) {
+        console.log(response);
+        ShowToastNotification(event, "success", "Payment Successful!");
+        resolve(response);
+      },
+      error: function (xhr, status, error) {
+        ShowToastNotification(event, "danger", "Something went wrong!");
+        reject(error);
+      },
+    });
   });
 }

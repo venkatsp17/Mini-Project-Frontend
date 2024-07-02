@@ -519,5 +519,84 @@
     width: 0%;
   }
 }
+.nav-bar {
+  position: relative;
+}
+.nav-bar input[type=text] {
+  width: 200px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-left: 10px;
+  font-size: 14px;
+  transition: width 0.3s ease-in-out;
+}
+.nav-bar .cancel-btn {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #666;
+  outline: none;
+  padding: 0;
+}
+.nav-bar.search-bar input[type=text] {
+  width: 300px; /* Example width increase when search bar is active */
+}
+.nav-bar.search-bar .cancel-btn {
+  display: block; /* Show cancel button when search bar is active */
+}
+.nav-bar.search-bar .logo {
+  display: none;
+}
+.nav-bar.search-bar .menu,
+.nav-bar.search-bar .nav-icons {
+  display: none;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+}
+.search-container input[type=text] {
+  width: 200px;
+  padding: 10px 30px 10px 10px; /* Adjust padding as needed */
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s ease-in-out;
+}
+.search-container input[type=text]:focus {
+  border-color: #007bff; /* Example focus border color */
+}
+.search-container input[type=text]::placeholder {
+  color: #ccc;
+}
+.search-container #HeaderSearch1 {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+}
+.search-container #HeaderSearch1 i {
+  font-size: 18px;
+  color: #666;
+}
+.search-container #HeaderSearch1:hover i {
+  transform: scale(110%);
+  color: #333; /* Example hover color */
+}
+
+.cancel-btn {
+  font-size: 30px;
+}
 
 /*# sourceMappingURL=common.css.map */

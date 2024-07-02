@@ -5,8 +5,9 @@ $(document).ready(async function () {
   let products = [];
   let currentPage = 1;
   let rowsPerPage = 10;
+  var searchQuery = "";
 
-  function fetchProducts(page, limit) {
+  function fetchProducts(page, limit, searchQuery) {
     var userDetails = getLoginInfo();
     var sellerInfo = getSellerInfo();
     if (userDetails == null || sellerInfo == null) {
@@ -14,28 +15,35 @@ $(document).ready(async function () {
       return;
     }
     const token = userDetails.token;
+    var offset =  (page - 1) * limit;
+    if(searchQuery==""){
+      // console.log("searchquery");
+      searchQuery="null";
+    }
+    else{
+      offset=0;
+    }
     $.ajax({
-      url: `http://localhost:5083/api/SellerProduct/ViewAllProducts?SellerID=1&offset=${
-        (page - 1) * limit
-      }&limit=${limit}`,
+      url: `http://localhost:5083/api/SellerProduct/ViewAllProducts?SellerID=1&offset=${offset}&limit=${limit}&searchQuery=${searchQuery}`,
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
         Authorization: `Bearer ${token}`,
       },
-      success: function (response) {
+      success:async function (response) {
         products = response.items;
-        displayProducts(products);
+        await displayProducts(products);
         updatePagination(response.totalCount);
       },
-    });
+    }); 
   }
 
-  function displayProducts(products) {
+  async function displayProducts(products) {
     const tbody = $("#productTableBody");
     tbody.empty();
-    products.forEach(async (product) => {
-      const imageUrl = await fetchImage(product.image_URL);
+    const imageUrls = await Promise.all(products.map(product => fetchImage(product.image_URL)));
+    products.forEach((product, index) => {
+      const imageUrl = imageUrls[index];
       const row = `
                 <tr>
                     <td><b>${product.productID}</b></td>
@@ -75,19 +83,19 @@ $(document).ready(async function () {
   $("#rowsPerPage").on("change", function () {
     rowsPerPage = $(this).val();
     currentPage = 1;
-    fetchProducts(currentPage, rowsPerPage);
+    fetchProducts(currentPage, rowsPerPage, searchQuery);
   });
 
   $("#prevPage").on("click", function () {
     if (currentPage > 1) {
       currentPage--;
-      fetchProducts(currentPage, rowsPerPage);
+      fetchProducts(currentPage, rowsPerPage, searchQuery);
     }
   });
 
   $("#nextPage").on("click", function () {
     currentPage++;
-    fetchProducts(currentPage, rowsPerPage);
+    fetchProducts(currentPage, rowsPerPage, searchQuery);
   });
 
   $(document).on("click", ".view-btn", function () {
@@ -169,7 +177,7 @@ $(document).ready(async function () {
 
     if (valid == 2) {
       $("#productEditModal").hide();
-      fetchProducts(currentPage, rowsPerPage);
+      fetchProducts(currentPage, rowsPerPage, searchQuery);
       ShowToastNotification(e, "success", "Product Updated!");
     } else {
       ShowToastNotification(e, "danger", "Something went wrong!");
@@ -182,9 +190,15 @@ $(document).ready(async function () {
 
   $(".add-button").on("click", function () {});
 
-  fetchProducts(currentPage, rowsPerPage);
+  fetchProducts(currentPage, rowsPerPage, searchQuery);
 
   await AddProductModal();
+
+  $('#searchInput').on('input', function() {
+    searchQuery = $(this).val();
+    // console.log(searchquery);
+    fetchProducts(currentPage, rowsPerPage, searchQuery);
+});
 });
 
 async function fetchImage(imageId) {

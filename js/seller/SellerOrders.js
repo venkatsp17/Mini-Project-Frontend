@@ -70,34 +70,44 @@ $(document).ready(function (event) {
   let currentPage = 1;
   let rowsPerPage = parseInt($("#rowsPerPage").val());
   let currentOrders = [];
+  var searchquery = "";
 
   // Initial fetch
-  fetchOrders(sellerID, token, currentPage, rowsPerPage, event);
+  fetchOrders(sellerID, token, currentPage, rowsPerPage, event, searchquery);
 
   // Event listeners for pagination controls
   $("#rowsPerPage").change(function () {
     rowsPerPage = parseInt($(this).val());
     currentPage = 1;
-    fetchOrders(sellerID, token, currentPage, rowsPerPage, event);
+    fetchOrders(sellerID, token, currentPage, rowsPerPage, event, searchquery);
   });
 
   $("#prevPage").click(function () {
     if (currentPage > 1) {
       currentPage--;
-      fetchOrders(sellerID, token, currentPage, rowsPerPage, event);
+      fetchOrders(sellerID, token, currentPage, rowsPerPage, event, searchquery);
     }
   });
 
   $("#nextPage").click(function () {
     currentPage++;
-    fetchOrders(sellerID, token, currentPage, rowsPerPage, event);
+    fetchOrders(sellerID, token, currentPage, rowsPerPage, event, searchquery);
   });
 
   // Function to fetch orders and update the table
-  function fetchOrders(sellerID, token, page, rowsPerPage, event) {
-    const offset = (page - 1) * rowsPerPage;
+  function fetchOrders(sellerID, token, page, rowsPerPage, event, searchquery) {
+
+  
+    var offset = (page - 1) * rowsPerPage;
+    if(searchquery==""){
+      // console.log("searchquery");
+      searchquery="null";
+    }
+    else{
+      offset=0;
+    }
     $.ajax({
-      url: `http://localhost:5083/api/SellerOrder/ViewAllActiveOrders?SellerID=${sellerID}&offset=${offset}&limit=${rowsPerPage}`,
+      url: `http://localhost:5083/api/SellerOrder/ViewAllActiveOrders?SellerID=${sellerID}&offset=${offset}&limit=${rowsPerPage}&searchQuery=${searchquery}`,
       method: "GET",
       headers: {
         "Content-type": "application/json; charset=UTF-8",
@@ -252,6 +262,13 @@ $(document).ready(function (event) {
   $(".close-btn").click(function () {
     $("#orderModal").hide();
   });
+
+
+  $('#searchInput').on('input', function() {
+    searchquery = $(this).val();
+    // console.log(searchquery);
+    fetchOrders(sellerID, token, currentPage, rowsPerPage, event, searchquery)
+});
 
 
 });

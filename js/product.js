@@ -1,25 +1,35 @@
 import { getLoginInfo } from "./Utils/auth.js";
 
-function productOnClick(product){
+function productOnClick(product) {
     window.localStorage.setItem('ProductInfo', JSON.stringify(product));
     window.location.href = "./productview.html";
 }
 
-const pageSize = 5; 
+var pageSize = 5;
 let currentPage = 1;
-let isFetching = false; // Flag to track if a fetch is in progress
+let isFetching = false;
+let hasMoreProducts = true; // Flag to track if there are more products to fetch
 
 async function fetchProducts(page) {
+    var query = localStorage.getItem('query');
+    if (query == null) {
+        query = "null";
+    } else {
+        localStorage.setItem('query', null);
+    }
     try {
-        const response = await fetch(`http://localhost:5083/api/CustomerProduct/GetAllProducts?page=${page}&pageSize=${pageSize}`);
+        const response = await fetch(`http://localhost:5083/api/CustomerProduct/GetAllProducts?page=${page}&pageSize=${pageSize}&query=${query}`);
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        // console.log(await response.json());
-        return await response.json(); 
+        const data = await response.json();
+        if (data.length < pageSize) {
+            hasMoreProducts = false; // No more products if the returned data is less than the page size
+        }
+        return data;
     } catch (error) {
         console.error('Error fetching products:', error);
-        return []; 
+        return [];
     }
 }
 
@@ -30,7 +40,6 @@ async function fetchImage(imageId) {
             method: "GET",
             headers: {
                 "Content-type": "application/json; charset=UTF-8",
-                // Authorization: `Bearer ${token}`,
             },
         }
     );
@@ -40,11 +49,13 @@ async function fetchImage(imageId) {
 
 async function renderProducts(products) {
     const productsContainer = document.querySelector('.products');
-    // const userDetails = getLoginInfo();
-    // if (userDetails == null) {
-    //     window.location.href = './login.html';
-    //     return;
-    // }
+    if (currentPage === 1) {
+        productsContainer.innerHTML = ""; // Clear only for the first page
+    }
+    if (products.length == 0 && currentPage === 1) {
+        productsContainer.innerHTML = "<h1>No item available!</h1>";
+        return;
+    }
     for (const product of products) {
         const imageUrl = await fetchImage(product.image_URL);
         const productElement = document.createElement('div');
@@ -54,30 +65,30 @@ async function renderProducts(products) {
             <h2>${product.name}</h2>
             <div class="price">
                 <span><b>Brand:</b> ${product.brand}</span>
-                <span class="discounted-price">₹${product.price}</span>
+                <span class="discounted-price">${product.stock == 0 ? "Out of Stock" : "₹" + product.price}</span>
             </div>`;
-        productElement.addEventListener('click',()=> productOnClick(product));
+        if (product.stock != 0) {
+            productElement.addEventListener('click', () => productOnClick(product));
+        }
         productsContainer.appendChild(productElement);
-
-
     }
 }
 
 function handleScroll() {
-    const footer = document.querySelector('.footer'); 
+    const footer = document.querySelector('.footer');
     const footerHeight = footer ? footer.offsetHeight : 0;
 
-    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - footerHeight) && !isFetching) {
-        isFetching = true; 
+    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - footerHeight) && !isFetching && hasMoreProducts) {
+        isFetching = true;
         currentPage++;
         fetchProducts(currentPage)
             .then(products => {
                 renderProducts(products);
-                isFetching = false; 
+                isFetching = false;
             })
             .catch(error => {
                 console.error('Error fetching more products:', error);
-                isFetching = false; 
+                isFetching = false;
             });
     }
 }

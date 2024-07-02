@@ -1,4 +1,5 @@
 import { getCustomerInfo, getLoginInfo } from "./Utils/auth.js";
+import { ShowToastNotification } from "./common.js";
 
 // Function to update the clock
 function updateClock() {
@@ -11,6 +12,44 @@ function updateClock() {
   const seconds = String(now.getSeconds()).padStart(2, "0");
 
   clockElement.textContent = `${hours}:${minutes}:${seconds}`;
+}
+
+function CancelOrder(event, orderID) {
+  var userDetails = getLoginInfo();
+  var customerInfo = getCustomerInfo();
+  if (userDetails == null || customerInfo == null) {
+    window.location.href = "./login.html";
+  }
+  const id = userDetails.id;
+  const token = userDetails.token;
+
+  // Endpoint URL
+  var endpoint =
+    "http://localhost:5083/api/CustomerOrder/CustomerCancelOrder?OrderID=" +
+    orderID;
+
+  // PUT request
+  $.ajax({
+    url: endpoint,
+    type: "PUT",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json", // Adjust content type as needed
+    },
+    success: function (response) {
+      // Handle success response
+      // console.log('Order successfully canceled:', response);
+      // window.location.reload();
+      LoadOrderContent('active');
+      ShowToastNotification(event, "success", "Order Canceled!");
+      
+    },
+    error: function (xhr, status, error) {
+      // Handle error
+      ShowToastNotification(event, "danger", "Something went wrong!");
+      // console.error('Error canceling order:', error);
+    },
+  });
 }
 
 // Update the clock every second
@@ -101,7 +140,7 @@ var CustomerID;
 async function LoadProfileContent() {
   var userDetails = getLoginInfo();
   var customerInfo = getCustomerInfo();
-  if (userDetails.token == undefined || customerInfo == null) {
+  if (userDetails == null || customerInfo == null) {
     window.location.href = "./login.html";
   }
   const id = userDetails.id;
@@ -133,6 +172,12 @@ async function LoadProfileContent() {
       ];
       const elements = document.querySelectorAll(".profile-values");
       let i = 0;
+      $("#greeting").text("Welcome! " + result.name);
+      $("#emailpasswordsec").text(result.email);
+      $(".profile-name").text(result.name);
+      $(".profile-pic").text(
+        result.name[0] + result.name[result.name.length - 1]
+      );
       elements.forEach((element) => {
         element.innerHTML = valueArray[i];
         i++;
@@ -147,7 +192,6 @@ var orders = [];
 var orderURL = `http://localhost:5083/api/CustomerOrder/ViewCurrentOrders?CustomerID=${CustomerID}`;
 
 async function LoadOrderContent(status) {
-
   var userDetails = getLoginInfo();
   var customerInfo = getCustomerInfo();
   if (userDetails == null || customerInfo == null) {
@@ -163,7 +207,7 @@ async function LoadOrderContent(status) {
   })
     .then((response) => response.json())
     .then(async function (result) {
-      console.log(result);
+      // console.log(result);
       if (result == null || result.length === 0) {
         console.error("Error fetching profile:", result);
         const element = document.querySelector(".order-details-orders");
@@ -171,11 +215,10 @@ async function LoadOrderContent(status) {
         return;
       }
       orders = result;
-      if(status == "completed"){
-        orders = orders.filter(order => order.status !== 4);
-      }
-      else if(status == "canceled"){
-        orders = orders.filter(order => order.status == 4);
+      if (status == "completed") {
+        orders = orders.filter((order) => order.status !== 4);
+      } else if (status == "canceled") {
+        orders = orders.filter((order) => order.status == 4);
       }
       const element = document.querySelector(".order-details-orders");
       element.innerHTML = "";
@@ -201,6 +244,11 @@ async function LoadOrderContent(status) {
         orderElement.innerHTML = `
           <div class="card-split-1">
             ${orderDetailsHTML}
+            ${
+              status == "active"
+                ? `<button data-order-id="${order.orderID}" class='cancel-button red-button'>Cancel</button>`
+                : "<div></div>"
+            }
           </div>
           <div class="card-split-2">
             <div class="card-split-2-top">
@@ -229,6 +277,13 @@ async function LoadOrderContent(status) {
 
         element.append(orderElement);
       }
+
+      document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("cancel-button")) {
+          var orderID = event.target.dataset.orderId;
+          CancelOrder(event, orderID);
+        }
+      });
     })
     .catch((error) => {
       console.error("Error fetching orders:", error);
@@ -275,3 +330,81 @@ function getFormattedDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString();
 }
+
+// Function to make fields editable
+function makeFieldsEditable() {
+  $(".profile-values").each(function () {
+    const value = $(this).text();
+    const input = $("<input>", {
+      type: "text",
+      value: value,
+      class: "editable-input",
+    });
+    $(this).replaceWith(input);
+  });
+  $("#edit-icon").hide();
+  $("<button>", {
+    text: "Save",
+    id: "save-btn",
+    click: function (e) {
+      saveChanges(e);
+    },
+  }).insertAfter("#edit-icon");
+}
+
+// Function to validate input fields
+function validateInputs() {
+  let isValid = true;
+  $(".editable-input").each(function () {
+    if ($(this).val().trim() === "") {
+      isValid = false;
+      $(this).css("border-color", "red");
+    } else {
+      $(this).css("border-color", "");
+    }
+  });
+  return isValid;
+}
+
+// Function to save changes
+async function saveChanges(e) {
+  if (!validateInputs()) {
+    alert("Please fill in all fields.");
+    return;
+  }
+  var userDetails = getLoginInfo();
+  var customerInfo = getCustomerInfo();
+  if (customerInfo == null || userDetails == null) {
+    window.localStorage.setItem("returnUrl", window.location.href);
+    window.location.replace("../login.html");
+    return;
+  }
+
+  const updatedInfo = {
+    customerID: customerInfo.CustomerID, // Replace with actual seller ID if dynamic
+    name: $("input:eq(0)").val(),
+    address: $("input:eq(1)").val(),
+    email: $("input:eq(2)").val(),
+    phone_Number: $("input:eq(3)").val(),
+  };
+
+  try {
+    const token = userDetails.token;
+    const response = await $.ajax({
+      url: "http://localhost:5083/api/User/UpdateCustomerProfile",
+      type: "PUT",
+      contentType: "application/json",
+      data: JSON.stringify(updatedInfo),
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    ShowToastNotification(e, "success", "Profile Updated!");
+    location.reload();
+  } catch (error) {
+    ShowToastNotification(e, "danger", "Something went wrong!");
+  }
+}
+
+// Add event listener to the edit icon
+$("#edit-icon").click(makeFieldsEditable);
